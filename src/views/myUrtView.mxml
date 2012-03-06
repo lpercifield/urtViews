@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:supportClasses="spark.skins.mobile.supportClasses.*"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		actionBarVisible="false" tabBarVisible="false" title="LOGIN" viewActivate="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:HTTPService id="logInService" url="http://urt.parsons.edu/urt/accounts/login/" result="logInResult(event)" method="POST" resultFormat="text" fault="httpFault(event)">
+			<s:request xmlns="">
+				<csrfmiddlewaretoken>{csrf}</csrfmiddlewaretoken>
+				<username>percl134</username>
+				<password>12345</password>
+			</s:request>
+		</s:HTTPService>
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable]
+			private var csrf:String;
+			[Bindable]
+			private var headerObj:Object = new Object;
+			private function logInResult(e:ResultEvent):void{
+				//This is where loginAPI result is handled...
+				trace(e.result);
+			}
+			private function init():void{
+				//var loginRequest:URLLoader = new URLLoader;
+				//loginRequest.load(new URLRequest("http://urt.parsons.edu/urt/accounts/login/"));
+				//loginRequest.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, gotResult);
+//				trace(this.data.csrf);
+//				trace(this.data.sessionid);
+//				headerObj.csrftoken = this.data.csrf;
+//				headerObj.sessionid = this.data.sessionid;
+//				csrf = this.data.csrf.toString();
+			}
+			private function loggingIn():void{
+				//logInService.headers.Cookie = "csrftoken="+headerObj.csrftoken+"; sessionid="+headerObj.sessionid;
+				//logInService.send();
+//				var loginRequest:URLLoader = new URLLoader;
+//				//var urlReq:URLRequest = new URLRequest("http://www.postbin.org/1d4f25w");
+//				var urlReq:URLRequest = new URLRequest("http://urt.parsons.edu/urt/accounts/login/");
+//				//http://www.postbin.org/1d4f25w
+//				urlReq.method = URLRequestMethod.POST;
+//				urlReq.requestHeaders = new Array(new URLRequestHeader("Cookie","csrftoken="+headerObj.csrftoken+"; sessionid="+headerObj.sessionid),new URLRequestHeader("Origin","http://urt.parsons.edu/"));
+//				//,new URLRequestHeader("Referer","http://urt.parsons.edu/urt/accounts/login/"),new URLRequestHeader("Host","urt.parsons.edu"),new URLRequestHeader("Origin","http://urt.parsons.edu")
+//				//Host:urt.parsons.edu
+//				//Origin:http://urt.parsons.edu
+//				var variables:URLVariables = new URLVariables();
+//				variables.username = "percl134";
+//				variables.password = "12345";
+//				variables.next = "";
+//				urlReq.data = variables;
+//				loginRequest.load(urlReq)
+//				loginRequest.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, gotResult);
+				//busy.visible = true;
+				//loginStuff.enabled=false;
+				var dataObject:Object = new Object;
+				dataObject.username = userName.text;
+				dataObject.title = "Historic Buildings in East Village";
+				dataObject.description ="history, architecture";
+				navigator.pushView(myUrtMain,dataObject);
+			}
+			private function gotResult(e:HTTPStatusEvent):void{
+				trace(e.responseHeaders.toString());
+//				for each(var header:URLRequestHeader in e.responseHeaders){
+//					//trace(header.name);
+//					if(header.name == "Set-Cookie"){
+//						csrf=header.value.split(";")[0].split("=")[1];
+//					}
+//				}
+			}
+			private function httpFault(e:FaultEvent):void{
+				trace(e.fault);
+			}
+		]]>
+	</fx:Script>
+	<s:navigationContent>
+		<s:Button 
+			icon="@Embed('/assets/home.png')"
+			click="navigator.popToFirstView()"/>
+	</s:navigationContent>
+	<s:BusyIndicator x="{(this.width/2)-20}" y="{(this.height/2)-20}" visible="false" id="busy" width="40" height="40"/>
+	<s:Group width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0x58595b" /></s:fill>
+		</s:Rect>
+	<s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%" id="loginStuff">
+		<s:VGroup>
+			<s:Button label="NEW USER?" click="navigator.pushView(register);" color="#FFFFFF"/>
+			<s:Spacer height="50"/>
+			<s:Label text="USER NAME"/>
+			<s:TextInput color="#FFFFFF" id="userName"/>
+			<s:Label text="PASSWORD"/>
+			<s:TextInput color="#FFFFFF" displayAsPassword="true" enter="loggingIn()"/>
+			<s:Button label="LOGIN" click="loggingIn()" color="#FFFFFF"/>
+		</s:VGroup>
+	</s:VGroup>
+	</s:Group>
+</s:View>

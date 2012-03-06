@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		actionBarVisible="false" overlayControls="false" tabBarVisible="false" title="NEW USER">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:HTTPService id="registerService" url="http://urt.parsons.edu/urt/mobile/user/add" method="POST" result="registerResult(event)" resultFormat="text" fault="registerFault(event)"/>
+		<fx:Component className="AlertMsg">
+			<s:SkinnablePopUpContainer x="70" y="300">
+				<s:TitleWindow title="REGISTER" close="close()">
+					<s:VGroup horizontalAlign="center" paddingTop="8" paddingBottom="8" paddingLeft="8" paddingRight="8" gap="5" width="100%">
+						<s:Label text="Please retype your password" color="#000000"/>
+						<s:Button label="OK" click="close()"/>
+					</s:VGroup>
+				</s:TitleWindow>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			private function registerUser():void{
+				//busy.visible = true;
+				//registerStuff.enabled=false;
+				trace("register");
+				//trace(this.login);
+				if(password.text == password2.text){
+					trace("if");
+					var params:Object = {username:userName.text, password:password.text, email:email.text, login:true};
+					navigator.pushView(newProject,params);
+					//registerService.send(params);
+				}else{
+					new AlertMsg().open(this, false);
+					busy.visible = false;
+					password.text = "";
+					password2.text = "";
+					
+				}
+
+			}
+			private function registerFault(e:FaultEvent):void{
+				trace(e.message);
+			}
+			private function registerResult(e:ResultEvent):void{
+				//busy.visible = true;
+				trace(e.result);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:navigationContent>
+		<s:Button 
+			icon="@Embed('/assets/home.png')"
+			click="navigator.popToFirstView()"/>
+	</s:navigationContent>
+	
+	<s:Group width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0x58595b" /></s:fill>
+		</s:Rect>
+	<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" id="registerStuff">
+		<s:VGroup>
+			<s:Label color="#00AFEA" fontSize="30" text="NEW USER:"/>
+			<s:Spacer height="20"/>
+			<s:Label text="USER NAME"/>
+			<s:TextInput id="userName"/>
+			<s:Label text="EMAIL ADDRESS"/>
+			<s:TextInput enter="registerUser()" id="email"/>
+			<s:Label text="PASSWORD"/>
+			<s:TextInput displayAsPassword="true" id="password"/>
+			<s:Label text="RETYPE PASSWORD"/>
+			<s:TextInput displayAsPassword="true" id="password2"/>
+			<s:Button label="REGISTER" click="registerUser()"/>
+		</s:VGroup>
+	</s:VGroup>
+	</s:Group>
+	<s:BusyIndicator x="{(this.width/2)-20}" y="{(this.height/2)-20}" visible="false" id="busy" width="40" height="40"/>
+</s:View>

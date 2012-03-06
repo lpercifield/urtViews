@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Pictures" viewActivate="view1_viewActivateHandler(event)"
+		actionBarVisible.normal="false" tabBarVisible.normal="false">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import flash.events.ErrorEvent;
+			import flash.filters.ColorMatrixFilter;
+			
+			import spark.events.ViewNavigatorEvent;
+			
+			protected var myCam:CameraUI;
+			private var mpLoader:Loader;
+			
+			protected function view1_viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				if (CameraUI.isSupported){
+					currentState = "normal";
+					//myCam = new CameraUI();
+					//myCam.addEventListener(MediaEvent.COMPLETE, onComplete);
+				}
+				else currentState = "unsupported";
+			}
+			
+			protected function btnPic_clickHandler(event:MouseEvent):void
+			{
+				img.filters = [];
+				myCam.launch(MediaType.IMAGE);
+			}
+			
+			protected function onComplete(evt:MediaEvent):void
+			{
+				img.source = evt.data.file.url;
+			}
+			private function onLaunchCameraUI(e:Event):void
+			{
+				var cameraUI:CameraUI = new CameraUI();
+				cameraUI.addEventListener(MediaEvent.COMPLETE, onCameraUIComplete);
+				cameraUI.addEventListener(Event.CANCEL, onCameraUICanceled);
+				cameraUI.addEventListener(ErrorEvent.ERROR, onCameraError);
+				cameraUI.launch(MediaType.IMAGE);
+			}
+			
+			private function onCameraUIComplete(e:MediaEvent):void
+			{
+				var cameraUI:CameraUI = e.target as CameraUI;
+				cameraUI.removeEventListener(MediaEvent.COMPLETE, onCameraUIComplete);
+				cameraUI.removeEventListener(Event.CANCEL, onCameraUICanceled);
+				cameraUI.removeEventListener(ErrorEvent.ERROR, onCameraError);
+				
+				var mediaPromise:MediaPromise = e.data;
+				
+				this.mpLoader = new Loader();
+				this.mpLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onMediaPromiseLoaded);
+				this.mpLoader.addEventListener(IOErrorEvent.IO_ERROR, onMediaPromiseLoadError);
+				this.mpLoader.loadFilePromise(mediaPromise);
+			}
+			
+			private function onMediaPromiseLoaded(e:Event):void
+			{
+				var mpLoaderInfo:LoaderInfo = e.target as LoaderInfo;
+				mpLoaderInfo.removeEventListener(Event.COMPLETE, onMediaPromiseLoaded);
+				mpLoaderInfo.loader.removeEventListener(IOErrorEvent.IO_ERROR, onMediaPromiseLoadError);
+				img.source = mpLoaderInfo.loader;
+			}
+			private function onMediaPromiseLoadError(e:IOError):void{
+				//trace(
+			}
+			private function onCameraError(e:ErrorEvent):void{
+				//trace(
+			}
+			private function onCameraUICanceled(e:Event):void{
+				
+			}
+			protected function applyFilter():void
+			{
+				if (img.filters.length==0)
+				{
+					var matrixArray:Array = [.33,.33,.33,0,0,
+						.33,.33,.33,0,0,
+						.33,.33,.33,0,0,
+						0,0,0,1,0];
+					var blackWhiteFilter:ColorMatrixFilter = new ColorMatrixFilter(matrixArray);
+					img.filters = [blackWhiteFilter];
+					btnBW.label = "COLOR";
+				}
+				else 
+				{
+					img.filters = [];
+					btnBW.label = "B/W FILTER";
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="unsupported"/>
+	</s:states>
+	
+	<s:layout>
+		<s:VerticalLayout gap="40" horizontalAlign="center" paddingBottom="20" paddingLeft="10"
+						  paddingRight="20" paddingTop="20" verticalAlign="middle"
+						  paddingBottom.normal="0" paddingLeft.normal="0" paddingRight.normal="0"
+						  paddingTop.normal="0"/>
+	</s:layout>
+	<s:Group width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0x58595b" /></s:fill>
+		</s:Rect>
+	<s:VGroup width="100%" height="100%" gap="40" horizontalAlign="center" paddingTop="40">
+	<s:Label text="This device does not support CameraUI." width="95%" includeIn="unsupported"/>
+	<s:HGroup includeIn="normal" top="10">
+		<s:Button id="btnPic" click="onLaunchCameraUI(event)" label="TAKE A PICTURE"/>
+		<s:Button id="btnBW" click="applyFilter()" label="B/W FILTER" />
+	</s:HGroup>
+	
+	<s:Image id="img" height="60%" width="90%" includeIn="normal"/> 	
+		<s:Button width="100" height="100" label="SAVE" click="navigator.popView();"/>
+	</s:VGroup>
+		</s:Group>
+</s:View>

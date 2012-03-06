@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		actionBarVisible="false" tabBarVisible="false" title="URT urban_reseach_tool" viewActivate="activated(event);" add="addHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			private var login:Boolean;
+			private function activated(e:ViewNavigatorEvent):void{
+				trace(data);
+				if (data != null) {
+					//data.login = navigator.poppedViewReturnedObject.object;
+					trace("Home "+data.login);
+					//dataTxt.text = returnedObject.myValue;
+				}
+			}
+			private function navigateMyURT():void{
+				if(login){
+					trace(data.userName);
+					navigator.pushView(myUrtMain,data);
+				}else{
+					navigator.pushView(myUrtView);
+				}
+				//navigator.pushView(myUrtView)
+			}
+			protected function addHandler(event:FlexEvent):void {
+				// If the data property is null, 
+				trace("add");
+				// initialize it and create the data.fontSize field.
+				if (data == null) {
+					data = new Object(); 
+					//data.fontSize = getStyle('fontSize');
+					return;
+				}
+				
+				// Otherwise, set data.fontSize to the retured value,
+				// and set the font size. 
+				data = navigator.poppedViewReturnedObject.object;
+				if(data.login){
+					login = true;
+					loginButton.label = "MY URT"
+				}
+				//setStyle('fontSize', data.fontSize);
+			}
+		]]>
+	</fx:Script>
+	<s:Group width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0x58595b" /></s:fill>
+		</s:Rect>
+		<s:Image width="100%" height="100%" source="@Embed('/assets/URTmobileBG.png')" scaleMode="stretch"/>
+	<s:VGroup horizontalAlign="right" width="100%" paddingTop="10" paddingRight="10">
+		<s:Button label="LOGIN" click="navigateMyURT()" id="loginButton"/>
+	</s:VGroup>
+	<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
+		<s:Button x="26" width="428" label="WHATS AROUND ME ?" click="navigator.pushView(MapsView)"/>
+		<s:TextInput x="27" width="426" text="SEARCH"/>
+	</s:VGroup>
+	</s:Group>
+	
+</s:View>

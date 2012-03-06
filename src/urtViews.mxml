@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TabbedViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+								  xmlns:s="library://ns.adobe.com/flex/spark"
+								  creationComplete="mobileapplication1_creationCompleteHandler(event)"
+								  splashScreenImage="@Embed('/assets/URTmobileBG.png')"
+								  splashScreenScaleMode="zoom">
+	<fx:Style source="urtViews_1.css"/>
+	<!--<fx:Style source="urtViews.css"/>-->
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import views.*;
+			[Bindable] private var login:Boolean = false;
+			[Bindable]
+			private var csrf:String;
+			protected function mobileapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+				NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivateApp);
+//				var loginRequest:URLLoader = new URLLoader;
+//				loginRequest.load(new URLRequest("http://urt.parsons.edu/urt/accounts/login/"));
+//				loginRequest.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, gotResult);
+			}
+			
+			protected function onDeactivateApp(event:Event):void
+			{
+				NativeApplication.nativeApplication.exit();
+			}
+			private function goHome():void{
+				this.tabbedNavigator.selectedIndex = 0;
+				//this.tabbedNavigator
+			}
+//			private function gotResult(e:HTTPStatusEvent):void{
+//				//trace(e.responseHeaders.toString());
+//				for each(var header:URLRequestHeader in e.responseHeaders){
+//					//trace(header.name);
+//					if(header.name == "Set-Cookie"){
+//						trace(header.value);
+//						var dataObject:Object = new Object;
+//						dataObject.cookie = header.value;
+//						dataObject.csrf=header.value.split(";")[0].split("=")[1];
+//						dataObject.sessionid=header.value.split(";")[3].split("=")[1];
+//						navigator.pushView(views.myUrtView, dataObject);
+//					}
+//				}
+//			}
+		]]>
+	</fx:Script>
+	<s:ViewNavigator width="100%" height="100%" label="ADD" firstView="views.urtViewsHomeView"
+					 icon="@Embed('assets/icons-08.png')">
+		<!-- ActionBar contents -->
+		<s:navigationContent>
+			<!-- Click to move to the bottom view in the navigation stack -->
+			<s:Button label="Home" click="goHome()"/>
+			
+		</s:navigationContent>
+	</s:ViewNavigator>
+	<s:ViewNavigator width="100%" height="100%" label="FIELD NOTES" firstView="views.RecordView"
+					 icon="@Embed('assets/icons-06.png')">
+		<s:navigationContent>
+			<!-- Click to move to the bottom view in the navigation stack -->
+			<s:Button label="Home" click="goHome()"/>
+			
+		</s:navigationContent>
+	</s:ViewNavigator>
+	<s:ViewNavigator width="100%" height="100%" label="MAP" firstView="views.MapsView"
+					 icon="@Embed('assets/icons-07.png')">
+		<s:navigationContent>
+			<!-- Click to move to the bottom view in the navigation stack -->
+			<s:Button label="Home" click="goHome()"/>
+			
+		</s:navigationContent>
+	</s:ViewNavigator>
+</s:TabbedViewNavigatorApplication>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="FIELD NOTE" viewActivate="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			[Bindable] private var titleProj:String;
+			private function init():void{
+				titleProj =	this.data.title;
+			}
+		]]>
+	</fx:Script>
+	<s:navigationContent>
+		<s:Button 
+			icon="@Embed('/assets/home.png')"
+			click="navigator.popToFirstView()"/>
+	</s:navigationContent>
+	<s:Group width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0x58595b" /></s:fill>
+		</s:Rect>
+	<s:VGroup width="100%" gap="10" horizontalAlign="left" paddingTop="10">
+		<s:Label color="#00AFEA" fontSize="30" text="PROJECT: {titleProj}"/>
+		<s:TextInput id="noteName" width="100%" color="#FFFFFF" text="NOTE_1" click="noteName.text=''"/>
+	<s:HGroup width="100%" gap="10" horizontalAlign="center">
+		<s:Button width="100" height="100" icon="@Embed('assets/icons-02.png')" click="navigator.pushView(RecordView)"/>
+		<s:Button width="100" height="100" icon="@Embed('assets/icons-03.png')" click="navigator.pushView(PicturesView)"/>
+	</s:HGroup>
+	<s:HGroup width="100%" gap="10" horizontalAlign="center">
+		<s:Button width="100" height="100" icon="@Embed('assets/icons-04.png')" click="navigator.pushView(textNote)"/>
+		<s:Button width="100" height="100" enabled="false" icon="@Embed('assets/icons-05.png')"/>
+	</s:HGroup>
+		<s:Spacer height="0"/>
+		<s:HGroup width="100%" gap="10" horizontalAlign="center">
+			<s:Button width="120" height="80" label="SAVE" fontSize="26"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+	</s:Group>
+</s:View>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:esri="http://www.esri.com/2008/ags"
+		xmlns:maps="com.google.maps.*"
+		tabBarVisible="false" title="Maps" viewActivate="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.SpatialReference;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.WebMercatorMapPoint;
+			import com.esri.ags.symbols.PictureMarkerSymbol;
+			import com.esri.ags.symbols.SimpleMarkerSymbol;
+			
+			import flash.events.PressAndTapGestureEvent;
+			import flash.events.TransformGestureEvent;
+			import flash.geom.Point;
+			import flash.sensors.Geolocation;
+			import flash.ui.Multitouch;
+			import flash.ui.MultitouchInputMode;
+			private var geoLocation:Geolocation;
+			private var mapZoom:int = 14;
+			private var lastLong:Number;
+			private var lastLat:Number;
+			
+			[Embed(source="/assets/blue-dot.png")] 
+			private var mapIcon:Class;
+			private var pictureMarker:PictureMarkerSymbol = new PictureMarkerSymbol(mapIcon);
+			private var myGraphicPic:Graphic = new Graphic;
+			private var foundMe:Boolean = false;
+			//private var marker:Marker;
+			
+			protected function init():void
+			{   
+				//var myGraphicMarker:Graphic = new Graphic(new MapPoint(40.69976504,-73.93123744,new SpatialReference(4326)),new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_DIAMOND, 22, 0x009933));
+				//myGraphicMarker.toolTip = "Marker added with ActionScript";
+				//var test:SimpleMarkerSymbol
+				//lat: 40.69976504
+				//long: -73.93123744
+				//myGraphicsLayer.add(myGraphicMarker);
+			}
+			protected function onRotate(e:TransformGestureEvent):void
+			{
+				trace("On rotate...");
+				//img.rotation += e.rotation;
+			}
+			
+			protected function onZoom(e:TransformGestureEvent):void
+			{
+				trace("On Zoom " + e.scaleX.toString());
+				//map.getZoom() = e.scaleX;
+				//map.setZoom(map.getZoom()*e.scaleX,true);
+				//map.scaleY *= e.scaleY;
+				//map.
+				//map.
+				//info.text = e.scaleX.toString();
+			}
+			
+			protected function onPan(e:TransformGestureEvent):void
+			{
+				trace("On pan... " + e.offsetX + " offset Y " + e.offsetY);
+				//var prevPoint:Point = new Point(img.x,img.y);
+				///img.x += e.offsetX*3;
+				//img.y += e.offsetY*3;
+			}
+			
+			protected function onSwipe(e:TransformGestureEvent):void
+			{
+				//trace("On swipe " + e.stageX);
+			}
+			private function onMapReady(event:Event):void {
+//				var markerOptions:MarkerOptions = new MarkerOptions();
+//				markerOptions.icon = new mapIcon();
+//				markerOptions.iconAlignment = MarkerOptions.ALIGN_HORIZONTAL_CENTER;
+//				markerOptions.iconOffset = new Point(2, 2);      
+				//marker = new Marker(map.getCenter(), markerOptions);
+				//map.setCenter(new LatLng(39,-86), 10, MapType.NORMAL_MAP_TYPE);
+				//map.addControl(new ZoomControl());
+				//map.addOverlay(marker);
+				//map.enableContinuousZoom();
+				//map.addEventListener(MouseEvent.DOUBLE_CLICK,doubleClick);
+				startGPS();
+				Multitouch.inputMode = MultitouchInputMode.GESTURE;
+				
+				if (!Multitouch.supportsGestureEvents){
+				}
+					//currentState = "unsupported";
+				else 
+				{
+					//currentState = "normal";
+					for each (var item:String in Multitouch.supportedGestures)
+					{
+						if (item == TransformGestureEvent.GESTURE_PAN){
+						}
+							//map.addEventListener(TransformGestureEvent.GESTURE_PAN, onPan);
+						else if (item == TransformGestureEvent.GESTURE_ROTATE){
+							
+						}
+							//map.addEventListener(TransformGestureEvent.GESTURE_ROTATE, onRotate);
+						else if (item == TransformGestureEvent.GESTURE_SWIPE){
+							
+						}
+							//map.addEventListener(TransformGestureEvent.GESTURE_SWIPE, onSwipe);
+						else if (item == TransformGestureEvent.GESTURE_ZOOM){
+							
+						}
+							//map.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
+					}
+				}
+			}
+			private function doubleClick(e:Event):void{
+				//map.setZoom(map.getZoom()+1);
+			}
+			protected function startGPS():void {
+				if(Geolocation.isSupported){
+					geoLocation = new Geolocation();
+					if(geoLocation.muted){
+						//info.text = "Hey, turn on your GPS please";
+					}
+					geoLocation.setRequestedUpdateInterval(3000);
+					geoLocation.addEventListener(GeolocationEvent.UPDATE, handleLocationRequest);      
+				} else {
+					//info.text = "GPS not supported";
+					map.centerAt(new WebMercatorMapPoint(-73.93123744,40.69976504));
+				}
+			}
+			
+			private function handleLocationRequest(event:GeolocationEvent):void {
+				//var pictureMarker:PictureMarkerSymbol = new PictureMarkerSymbol(mapIcon);
+				if(foundMe == false){
+					myGraphicPic.geometry = new WebMercatorMapPoint(event.longitude,event.latitude);
+					//myGraphicPic.geometry = new WebMercatorMapPoint(event.longitude,event.latitude);
+					//var myGraphicPic:Graphic = new Graphic(new MapPoint(-411000, 4924000, new SpatialReference(102100)));
+					myGraphicPic.symbol = pictureMarker;
+					myGraphicsLayer.add(myGraphicPic);
+					foundMe=true;
+					map.centerAt(new WebMercatorMapPoint(event.longitude,event.latitude));
+				}else{
+					myGraphicPic.geometry = new WebMercatorMapPoint(event.longitude,event.latitude);
+				}
+				
+				lastLong = event.longitude;
+				lastLat = event.latitude;
+				
+				//var myGraphicMarker:Graphic = new Graphic(new MapPoint(event.latitude,event.longitude,new SpatialReference(4326)),new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_DIAMOND, 22, 0x009933));
+				//var myGraphicMarker:Graphic = new Graphic(new WebMercatorMapPoint(event.longitude,event.latitude),new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 18, 0x009933));
+				//myGraphicMarker.toolTip = "Marker added with ActionScript";
+				//var test:SimpleMarkerSymbol
+				//lat: 40.69976504
+				//long: -73.93123744
+				//myGraphicsLayer.add(myGraphicMarker);
+				//var myPoint:MapPoint = new MapPoint(event.latitude,event.longitude,new SpatialReference(4326));
+				//map.setCenter(new LatLng(event.latitude,event.longitude));    
+				//info.text = "Latitude: " + event.latitude.toString() + "\nLongitude: " + event.longitude.toString();     
+				//marker.setLatLng(new LatLng(event.latitude,event.longitude));
+			}
+			private function centerMap():void{
+				map.centerAt(new WebMercatorMapPoint(lastLong,lastLat));
+			}
+			
+		]]>
+	</fx:Script>
+	<s:navigationContent>
+		<s:Button 
+			icon="@Embed('/assets/home.png')"
+			click="navigator.popView()"/>
+	</s:navigationContent>
+	<s:actionContent>
+		<s:Button icon="@Embed('/assets/mylocation.png')" click="centerMap()"/>
+		<!--<s:Button icon="@Embed('/assets/search.png')"/>-->
+	</s:actionContent>
+	<!--<s:TextArea id="info" top="10" height="100" width="100%" editable="false"/>-->
+	<esri:Map logoVisible="false"
+			  openHandCursorVisible="false"
+			  wrapAround180="false" load="onMapReady(event)" level="11" id="map">
+		<esri:OpenStreetMapLayer/>
+		<esri:GraphicsLayer id="myGraphicsLayer">
+			
+		</esri:GraphicsLayer>
+	</esri:Map>
+	<!--<maps:Map id="map" mapevent_mapready="onMapReady(event)" sensor="false" 
+			  url="http://www.lpimaging.net" 
+			  top="110" bottom="0" width="100%"
+			  key="ABQIAAAAmyDp7lZZjI3edkPRVK2YohTg2f9hGz288qey7GQWoBAzRy4bwRSbZWQZem-oADFTF15APYE_W-N08g"/>-->
+	<!--<s:Group width="100%" height="200" contentBackgroundColor="#ffffff" contentBackgroundAlpha="100">
+		<s:VGroup width="100%" height="100%">
+			<s:HSlider minimum=".1" maximum="2" snapInterval=".5"/>
+		</s:VGroup>
+	</s:Group>-->
+</s:View>

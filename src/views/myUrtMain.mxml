@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="{userName}" viewActivate="init()">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" paddingTop="5"/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:ArrayCollection id="projectsAC">
+			<!--<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>
+			<fx:Object title="Project Name" description="Some short description would be here"/>-->
+		</s:ArrayCollection>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			import spark.events.ListEvent;
+			[Bindable] private var userName:String;
+			private function init():void{
+				trace(data.username);
+				if(this.data.username != null){
+					userName = this.data.username;	
+				}
+				if(this.data.title !=null){
+					projectsAC.addItem(this.data);
+				}
+				
+			}
+			private function itemClick(e:IndexChangeEvent):void{
+				var dataObject:Object = new Object;
+				dataObject.title = e.target.selectedItem.title;
+				navigator.pushView(fieldNote,dataObject);
+			}
+			override public function createReturnObject():Object {
+				var returnedObject:Object = new Object();
+				//returnedObject.login = true;
+				returnedObject=this.data; 
+				return returnedObject;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Group width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0x58595b" /></s:fill>
+		</s:Rect>
+	<s:VGroup width="100%" height="100%" paddingTop="10" paddingLeft="10" paddingRight="10">
+	<s:Label color="#00AFEA" text="PROJECTS"/>
+	<s:List width="100%" height="80%" color="#FFFFFF" labelField="title" change="itemClick(event)" dataProvider="{projectsAC}">
+		<s:itemRenderer>
+			<fx:Component>
+				<!--<s:IconItemRenderer
+					label="{data.title}"
+					messageField="description" chromeColor="0x58595b"/>-->
+				<s:ItemRenderer autoDrawBackground="false">
+					<s:states>
+						<s:State name="normal" />
+						<s:State name="down" />
+						<s:State name="selected" />
+						<s:State name="downAndSelected" />
+					</s:states>
+					<s:Rect>
+						<s:fill>
+							<s:SolidColor color.normal="0x58595b" color.selected="0x878888" color.downAndSelected="0x878888" color.down="0x878888" />
+						</s:fill>
+					</s:Rect>
+					<s:VGroup paddingBottom="5" width="100%">
+						<s:Label text="{data.title}"/>
+						<s:Label text="{data.description}" fontSize="12"/>
+						<s:VGroup width="100%" horizontalAlign="center">
+							<s:Line xFrom="0" xTo="400" yFrom="0" yTo="0" percentWidth="100">
+							<s:stroke>
+								<s:SolidColorStroke color="0x00AFEA" weight="3" caps="square"/>
+							</s:stroke>
+						</s:Line>
+						</s:VGroup>
+						
+					</s:VGroup>
+				</s:ItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+	<s:Button label="CREATE" click="navigator.pushView(newProject, this.data)"/>
+	</s:VGroup>
+	</s:Group>
+	<s:navigationContent>
+		<s:Button 
+			icon="@Embed('/assets/home.png')"
+			click="navigator.popToFirstView()"/>
+	</s:navigationContent>
+</s:View>
